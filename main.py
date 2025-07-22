@@ -22,3 +22,9 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_FOLDER), name="uploads")
 @app.get("/")
 async def read_root(request:Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+
+@app.get("/api/notes")
+async def get_notes(request:Request):
+    # return a placeholder for now
+    return ["note1", "note2", "note4"]
