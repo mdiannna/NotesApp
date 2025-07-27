@@ -50,9 +50,27 @@
           this.notes = await axios.get('/api/notes')
           console.log("notes", this.notes)
         },
-        submitNote() {
-          alert(`Note submitted:\n\n${this.note}`);
-        }
+        async submitNote() {
+          if (!this.note?.trim()) {
+            alert("Error. Note is empty");
+            return;
+          }
+
+          try {
+            const response = await axios.post('/api/notes/create', {
+              text: this.note, // or whatever key your API expects
+              author: "Diana"
+            });
+            console.log('Note submitted:', response.data);
+            alert(`Note submitted:\n\n${this.note}`);
+            this.text = ''; // Clear the input after submission, if desired
+            this.getNotes(); // Refresh the notes list
+          } catch (error) {
+            console.error('Error submitting note:', error);
+            alert('Failed to submit note. Please try again.');
+          }
+        }       
+        
       }
     }).mount('#app');
   </script>
