@@ -9,7 +9,7 @@
   <!-- TODO: move to separate file -->
   <style>
     .note-bg {
-        background-color: chocolate;
+        background-color: rgb(21, 159, 177);
         margin: 10px;
         /* max-width: 50%; */
         text-overflow: ellipsis;
@@ -29,16 +29,22 @@ white-space: nowrap;
     <div><p>Notes:</p>{{notes}}</div>
 
     <div class="row">
-        <div class="col-md-5 note-bg pt-2 pb-2">
-            <p><b>Author: Diana</b></p>
-            <p class="note-p">This is a note</p>
-            <button class="btn btn-primary">View note</button>
-        </div>
+<!-- 
         <div class="col-md-5 note-bg pt-2 pb-2">
             <p><b>Author: Diana</b></p>
             <p class="note-p">This is another note is another note is another note is another note is another note is another note</p>
             <button class="btn btn-primary">View note</button>
+        </div> -->
+        {% for note in notes %}
+        {% if note.text!="" %}
+
+        <div class="col-md-5 note-bg pt-2 pb-2">
+            <p><b>Author: {{ note.author }}</b></p>
+            <p class="note-p">{{ note.text }}</p>
+            <button class="btn btn-primary">View note</button>
         </div>
+        {% endif %}
+        {% endfor %}
     </div>
     <div class="row">
         <div class="col-md-2">
