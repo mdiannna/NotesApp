@@ -64,8 +64,16 @@ notes = ["note1", "note2", "note4"]
 
 @app.get("/")
 async def read_root(request:Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    notes_cursor = collection.find()
+    notes = []
+    async for note in notes_cursor:
+        notes.append(note_helper(note))
+    return templates.TemplateResponse("view_notes.html", {"request": request, "notes":notes})
 
+
+@app.get("/add_note")
+async def add_note(request:Request):
+    return templates.TemplateResponse("add_note.html", {"request": request})
 
 # @app.get("/api/notes")
 # async def get_notes(request:Request):
