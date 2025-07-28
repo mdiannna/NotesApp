@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import os
-from fastapi import Request
+from fastapi import Request, HTTPException
 from pydantic import BaseModel, Field
 
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -98,9 +98,23 @@ async def get_notes():
         notes.append(note_helper(note))
     return notes
 
+
 # POST create a note
 @app.post("/api/notes/create", response_model=NoteOut)
 async def create_note(request: NoteRequest):
     result = await collection.insert_one(request.dict())
     new_note = await collection.find_one({"_id": result.inserted_id})
     return note_helper(new_note)
+
+
+@app.delete("/api/notes/{note_id}", response_model=dict)
+async def delete_note(note_id:str):
+    if not ObjectId.is_valid(note_id):
+        raise HTTPException(status_code=400, detail="invalid note ID format")
+    
+    result = await collection.delete_one({"_id": ObjectId(note_id)})
+
+    if result.deleted_count==1:
+        return {"message": "Note deleted successfully"}
+    # else
+    raise HTTPException(status_code=404, detail="Note not found")

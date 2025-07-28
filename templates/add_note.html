@@ -89,7 +89,7 @@
             console.log('Note submitted:', response.data);
             alert(`Note submitted:\n\n${this.note}`);
             this.text = ''; // Clear the input after submission, if desired
-            this.getNotes(); // Refresh the notes list
+            this.getNotes(); // Refresh the notes list TODO later
           } catch (error) {
             console.error('Error submitting note:', error);
             alert('Failed to submit note. Please try again.');

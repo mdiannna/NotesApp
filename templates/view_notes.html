@@ -61,14 +61,18 @@ white-space: nowrap;
             <button class="btn btn-primary">View note</button>
         </div> -->
         {% for note in notes %}
-        {% if note.text!="" %}
-
-        <div class="col-md-5 note-bg pt-2 pb-2">
+        
+        <div class="col-md-5 note-bg pt-2 pb-2" id={{note.id}}>
             <p><b>Author: {{ note.author }}</b></p>
+            {% if note.text=="" %}
+            <p><i>empty note</i></p>
+            {% else %}
             <p class="note-p">{{ note.text }}</p>
-            <button class="btn btn-primary">View note</button>
+            {% endif %}
+
+            <button class="btn btn-primary me-2">View note</button>
+            <button class="btn btn-danger" id={{note.id}} @click="deleteNote($event)">Delete note</button>
         </div>
-        {% endif %}
         {% endfor %}
     </div>
     <div class="row">
@@ -102,6 +106,26 @@ white-space: nowrap;
         }
       },
       methods: {     
+        async deleteNote() {
+          const buttonId = event.target.id;
+          const noteId = buttonId;
+          console.log("Button / Note ID:", noteId);
+          // TODO:request to backend to delete the note with the id
+          if (!noteId) {
+            alert("Error. Note ID is missing");
+            return;
+          }
+
+          try {
+            const response = await axios.delete(`/api/notes/${noteId}`);
+            console.log('Note deleted:', response.data);
+            alert(`Note deleted successfully.`);
+            // this.getNotes(); // Refresh the notes list later if needed
+          } catch (error) {
+            console.error('Error deleting note:', error);
+            alert('Failed to delete note. Please try again.');
+          }
+        }
       }
     }).mount('#app');
   </script>
