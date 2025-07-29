@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notes App - view note</title>
+  <!-- Bootstrap 5 CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- TODO: move to separate file -->
+  <style>
+    .note-bg {
+        background-color: rgb(21, 159, 177);
+        margin: 10px;
+        /* max-width: 50%; */
+        text-overflow: ellipsis;
+    }
+    .note-p {
+        text-overflow: ellipsis;
+        overflow: hidden;
+white-space: nowrap;
+        max-height: 10vh;
+    }
+    </style>
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
+    <a class="navbar-brand ps-3" href="/">Notes app</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="/add_note">Add note</a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li> -->
+      </ul>
+      <!-- <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form> -->
+    </div>
+  </nav>
+  
+  <div id="app" class="container mt-5">
+    
+    <!-- <div><p>Note id:</p>{{noteId}}</div> -->
+
+    <div class="row">
+      <div class="col-md-2">
+        <a href="/">Back to all notes</a>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5 note-bg pt-2 pb-2">
+          <p>
+            <b>Author: </b>
+            <span v-if="note.author !== ''">[[ note.author ]]</span>
+            <span v-else><i>No author</i></span>
+          </p>
+
+          <p class="note-p">[[ note.text ]]</p>
+        </div>
+   </div>
+    <div class="row">
+  
+      <div class="col-md-2">
+        <button class="btn btn-danger">Delete note</button> 
+        </div>
+      </div>
+  </div>
+
+   <!-- Vue.js 3 CDN -->
+   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Vue App Script -->
+   <script>
+    const { createApp } = Vue;
+    // import axios from 'axios'
+
+
+    createApp({
+      delimiters: ['[[', ']]'],  // <-- change Vue delimiters here
+      data() {
+        return {
+          note: '',
+        }
+      },
+      methods: {     
+        async getNote() {
+          this.note_id = "{{noteId}}"
+          this.note_data = await axios.get('/api/notes/'+this.note_id)
+          this.note = this.note_data.data
+          console.log("note>", this.note)
+        },
+      },
+      mounted() {
+      this.getNote();  // Call the method when the component mounts
+    }
+    }).mount('#app');
+  </script>
+</body>
+</html>

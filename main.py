@@ -75,6 +75,11 @@ async def read_root(request:Request):
 async def add_note(request:Request):
     return templates.TemplateResponse("add_note.html", {"request": request})
 
+
+@app.get("/view_note/{note_id}")
+async def add_note(request:Request, note_id:str):
+    return templates.TemplateResponse("view_note.html", {"request": request, "noteId":note_id})
+
 # @app.get("/api/notes")
 # async def get_notes(request:Request):
 #     # return a placeholder for now
@@ -98,6 +103,15 @@ async def get_notes():
         notes.append(note_helper(note))
     return notes
 
+# GET one note
+@app.get("/api/notes/{note_id}", response_model=dict)
+async def get_one_note(note_id:str):
+
+    if not ObjectId.is_valid(note_id):
+        raise HTTPException(status_code=400, detail="invalid note ID format")
+    
+    note = await collection.find_one({"_id": ObjectId(note_id)})
+    return note_helper(note)
 
 # POST create a note
 @app.post("/api/notes/create", response_model=NoteOut)
