@@ -2,6 +2,8 @@
 
 Notes App is a FastAPI and mongodb website for taking notes.
 
+*(Work in progress)*
+
 ## Installation
 
 In order to install the required packages, please type:
