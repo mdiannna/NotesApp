@@ -51,7 +51,7 @@ white-space: nowrap;
   <div id="app" class="container mt-5">
     <h1 class="text-center mb-4">Notes App - view notes grid</h1>
     
-    <div><p>Notes:</p>[[ this.notes ]]</div>
+    <!-- <div><p>Notes:</p>[[ this.notes ]]</div> -->
 
     <div class="row">
 <!-- 
@@ -122,10 +122,16 @@ white-space: nowrap;
           const buttonId = event.target.id;
           const noteId = buttonId;
           console.log("Button / Note ID:", noteId);
-          // TODO:request to backend to delete the note with the id
+
           if (!noteId) {
             alert("Error. Note ID is missing");
             return;
+          }
+
+          // Confirmation popup
+          const confirmed = window.confirm("Are you sure you want to delete this note?");
+          if (!confirmed) {
+            return; // Cancel deletion if user says no
           }
 
           try {
