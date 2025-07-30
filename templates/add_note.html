@@ -45,9 +45,11 @@
     <div class="d-grid">
       <button type="button" class="btn btn-primary" @click="submitNote">Submit Note</button>
       <span class="pt-2"></span>
-      <button type="button" class="btn btn-primary" @click="getNotes">Get notes</button>
+      <!-- for testing purposes -->
+      <!-- <button type="button" class="btn btn-primary" @click="getNotes">Get notes</button> -->
     </div>
-    <div><p>Notes:</p>[[notes]]</div>
+      <!-- for testing purposes -->
+    <!-- <div><p>Notes:</p>[[notes]]</div> -->
   </div>
 
    <!-- Vue.js 3 CDN -->
@@ -75,6 +77,7 @@
         }
       },
       methods: {
+        // method for temporarily testing
         async getNotes() {
           this.notes = await axios.get('/api/notes')
           console.log("notes", this.notes)
@@ -93,7 +96,9 @@
             console.log('Note submitted:', response.data);
             alert(`Note submitted:\n\n${this.note}`);
             this.text = ''; // Clear the input after submission, if desired
-            this.getNotes(); // Refresh the notes list TODO later
+            // this.getNotes();
+            window.location.href = '/';  // 🔁 redirect to home page
+
           } catch (error) {
             console.error('Error submitting note:', error);
             alert('Failed to submit note. Please try again.');
