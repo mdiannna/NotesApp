@@ -1,6 +1,6 @@
 # Notes App
 
-Notes App is a FastAPI and mongodb website for taking notes.
+Notes App is a FastAPI + MongoDB + Bootstrap website for taking notes.
 
 *(Work in progress)*
 
