@@ -36,7 +36,10 @@
   <div id="app" class="container mt-5">
     <h1 class="text-center mb-4">Notes App</h1>
     <div class="mb-3">
-      <label for="noteTextarea" class="form-label">Write your note</label>
+      <label for="author" class="form-label">Author:</label>
+      <input class="form-control" id="author" type="text" placeholder="Type author..." v-model="author">
+    <div class="mb-3">
+        <label for="noteTextarea" class="form-label">Write your note:</label>
       <textarea class="form-control" id="noteTextarea" rows="5" placeholder="Type your note here..." v-model="note"></textarea>
     </div>
     <div class="d-grid">
@@ -67,6 +70,7 @@
       data() {
         return {
           note: '',
+          author: '',
           notes: []
         }
       },
@@ -84,7 +88,7 @@
           try {
             const response = await axios.post('/api/notes/create', {
               text: this.note, // or whatever key your API expects
-              author: "Diana"
+              author: this.author
             });
             console.log('Note submitted:', response.data);
             alert(`Note submitted:\n\n${this.note}`);
