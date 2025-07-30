@@ -12,4 +12,9 @@ In order to install the required packages, please type:
 
 ## Usage
 Before starting the Notes App, you need to start the mongodb service (on Ubuntu) by calling the following command:
+
 ```$ sudo service mongod start ```
+
+Then you can run the code with the following command:
+
+```$ fastapi dev main.py```
