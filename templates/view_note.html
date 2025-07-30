@@ -65,7 +65,7 @@
     <div class="row">
   
       <div class="col-md-2">
-        <button class="btn btn-danger">Delete note</button> 
+        <button class="btn btn-danger" @click="deleteNote()">Delete note</button> 
         </div>
       </div>
   </div>
@@ -82,6 +82,7 @@
    <!-- Vue App Script -->
    <script>
     const { createApp } = Vue;
+    
     // import axios from 'axios'
 
 
@@ -90,6 +91,7 @@
       data() {
         return {
           note: '',
+          note_id: '',
         }
       },
       methods: {     
@@ -99,6 +101,31 @@
           this.note = this.note_data.data
           console.log("note>", this.note)
         },
+        async deleteNote() {
+          // this.note_id = "{{noteId}}"
+          console.log("Note ID to delete:", this.note_id);
+
+          if (!this.note_id) {
+            alert("Error. Note ID is missing");
+            return;
+          }
+
+          // Confirmation popup
+          const confirmed = window.confirm("Are you sure you want to delete this note?");
+          if (!confirmed) {
+            return; // Cancel deletion if user says no
+          }
+
+          try {
+            const response = await axios.delete(`/api/notes/${this.note_id}`);
+            console.log('Note deleted:', response.data);
+            alert(`Note deleted successfully.`);
+            window.location.href = '/';  // 🔁 redirect to home page
+          } catch (error) {
+            console.error('Error deleting note:', error);
+            alert('Failed to delete note. Please try again.');
+          }
+        }
       },
       mounted() {
       this.getNote();  // Call the method when the component mounts
