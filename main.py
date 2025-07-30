@@ -7,11 +7,6 @@ from pydantic import BaseModel, Field
 
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
-# from bson import ObjectId
-# import pymongo
-# from pymongo import AsyncMongoClient
-# from pymongo import ReturnDocument
-# from pymongo.server_api import ServerApi
 
 
 app = FastAPI()
@@ -32,11 +27,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/uploads", StaticFiles(directory=UPLOAD_FOLDER), name="uploads")
 
-
-
-# client = AsyncMongoClient(os.environ["MONGODB_URL"],server_api=pymongo.server_api.ServerApi(version="1", strict=True,deprecation_errors=True))
-# db = client.college
-# student_collection = db.get_collection("students")
 
 # Pydantic model
 class Note(BaseModel):
@@ -79,19 +69,6 @@ async def add_note(request:Request):
 @app.get("/view_note/{note_id}")
 async def add_note(request:Request, note_id:str):
     return templates.TemplateResponse("view_note.html", {"request": request, "noteId":note_id})
-
-# @app.get("/api/notes")
-# async def get_notes(request:Request):
-#     # return a placeholder for now
-#     return notes
-
-# @app.post("/api/notes/create")
-# async def create_note(request: NoteRequest):
-#     print("request to create note")
-#     print(request.note_text)
-#     notes.append(request.note_text)
-#     #TODO: create note and (fake) database or use mongo with motor
-#     return "note created succesful"
 
 
 # GET all notes
