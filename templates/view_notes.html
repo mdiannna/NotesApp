@@ -51,7 +51,7 @@ white-space: nowrap;
   <div id="app" class="container mt-5">
     <h1 class="text-center mb-4">Notes App - view notes grid</h1>
     
-    <div><p>Notes:</p>{{notes}}</div>
+    <div><p>Notes:</p>[[ this.notes ]]</div>
 
     <div class="row">
 <!-- 
@@ -60,19 +60,27 @@ white-space: nowrap;
             <p class="note-p">This is another note is another note is another note is another note is another note is another note</p>
             <button class="btn btn-primary">View note</button>
         </div> -->
-        {% for note in notes %}
         
-        <div class="col-md-5 note-bg pt-2 pb-2" id={{note.id}}>
-            <p><b>Author: {{ note.author }}</b></p>
-            {% if note.text=="" %}
-            <p><i>empty note</i></p>
-            {% else %}
-            <p class="note-p">{{ note.text }}</p>
-            {% endif %}
-            <a class="btn btn-primary me-2" href="/view_note/{{note.id}}">View note</a>
-            <button class="btn btn-danger" id={{note.id}} @click="deleteNote($event)">Delete note</button>
-        </div>
-        {% endfor %}
+        <div
+        class="col-md-5 note-bg pt-2 pb-2"
+        v-for="note in notes"
+        :key="note.id"
+        :id="note.id"
+      >
+        <p>
+          <b>Author: </b>
+          <span v-if="note.author !== ''">[[ note.author ]]</span>
+          <span v-else><i>No author</i></span>
+        </p>
+      
+        <p class="note-p" v-if="note.text !== ''">[[ note.text ]]</p>
+        <p v-else><i>empty note</i></p>
+      
+        <a class="btn btn-primary me-2" :href="`/view_note/${note.id}`">View note</a>
+        <button class="btn btn-danger" :id="note.id" @click="deleteNote($event)">
+          Delete note
+        </button>
+      </div>
     </div>
     <div class="row">
         <div class="col-md-2">
@@ -105,6 +113,11 @@ white-space: nowrap;
         }
       },
       methods: {     
+        async getNotes() {
+          const response = await axios.get('/api/notes');
+          this.notes = response.data;
+          console.log("notes", this.notes)
+        },
         async deleteNote() {
           const buttonId = event.target.id;
           const noteId = buttonId;
@@ -125,6 +138,9 @@ white-space: nowrap;
             alert('Failed to delete note. Please try again.');
           }
         }
+      },
+      mounted() {
+        this.getNotes();  // Call the method when the component mounts
       }
     }).mount('#app');
   </script>
