@@ -132,7 +132,7 @@ white-space: nowrap;
             const response = await axios.delete(`/api/notes/${noteId}`);
             console.log('Note deleted:', response.data);
             alert(`Note deleted successfully.`);
-            // this.getNotes(); // Refresh the notes list later if needed
+            this.getNotes(); // Refresh the notes list later if needed
           } catch (error) {
             console.error('Error deleting note:', error);
             alert('Failed to delete note. Please try again.');
