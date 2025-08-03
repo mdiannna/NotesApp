@@ -46,6 +46,7 @@ def note_helper(note) -> dict:
     }
 
 class NoteRequest(BaseModel):
+    id: str | None = None
     text: str | None = None
     author: str | None = None
 
@@ -98,6 +99,7 @@ async def create_note(request: NoteRequest):
     return note_helper(new_note)
 
 
+
 @app.delete("/api/notes/{note_id}", response_model=dict)
 async def delete_note(note_id:str):
     if not ObjectId.is_valid(note_id):
@@ -109,3 +111,35 @@ async def delete_note(note_id:str):
         return {"message": "Note deleted successfully"}
     # else
     raise HTTPException(status_code=404, detail="Note not found")
+
+
+# POST update note
+@app.post("/api/notes/update", response_model=NoteOut)
+async def update_note(request: NoteRequest):
+    print("update note request:")
+    print(request.dict())
+
+    note_id = request.id
+    print("note_id:", note_id)
+    
+    if not ObjectId.is_valid(note_id):
+        raise HTTPException(status_code=400, detail="Invalid note ID.")
+
+    update_data = request.dict()
+    update_data.pop("id")  # Don't try to update the _id field
+
+    existing_note = await collection.find_one({"_id": ObjectId(note_id)})
+    
+    if not existing_note:
+        raise HTTPException(status_code=404, detail="Note not found.")
+    
+    result = await collection.update_one(
+        {"_id": ObjectId(note_id)},
+        {"$set": update_data}
+    )
+
+    # if result.modified_count == 0:
+    #     raise HTTPException(status_code=404, detail="No changes made.")
+
+    updated_note = await collection.find_one({"_id": ObjectId(note_id)})
+    return note_helper(updated_note)

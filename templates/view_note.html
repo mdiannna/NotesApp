@@ -10,9 +10,15 @@
   <style>
     .note-bg {
         background-color: rgb(21, 159, 177);
-        margin: 10px;
-        /* max-width: 50%; */
-        text-overflow: ellipsis;
+        }
+    .note-div {
+      height: 100%;
+      text-overflow:visible;
+    }
+    .note-p {
+      width: 100%;
+      min-height: 50vh;
+      height:100%;
     }
     </style>
 </head>
@@ -52,22 +58,27 @@
       </div>
     </div>
     <div class="row">
-        <div class="col-md-8 px-auto mx-auto note-bg pt-2 pb-2">
+        <div class="col-md-8 px-auto mx-auto note-bg note-div pt-2 pb-2">
           <p>
             <b>Author: </b>
             <span v-if="note.author !== ''">[[ note.author ]]</span>
             <span v-else><i>No author</i></span>
           </p>
 
-          <p class="note-p">[[ note.text ]]</p>
+          <textarea class="note-p note-bg" :readonly="!is_editing" v-model="note.text">[[ note.text ]]</textarea>
         </div>
    </div>
     <div class="row">
   
-      <div class="col-md-2">
-        <button class="btn btn-danger" @click="deleteNote()">Delete note</button> 
-        </div>
+      <div class="col-md-2" v-if="is_editing">
+        <button class="btn btn-success" @click="updateNote()">Save note</button> 
       </div>
+      <div class="col-md-2" v-else>
+        <button class="btn btn-primary" @click="editNote()">Edit note</button> 
+        <button class="btn btn-danger" @click="deleteNote()">Delete note</button> 
+      </div>
+      
+    </div>
   </div>
 
    <!-- Vue.js 3 CDN -->
@@ -92,6 +103,7 @@
         return {
           note: '',
           note_id: '',
+          is_editing:false,
         }
       },
       methods: {     
@@ -100,6 +112,34 @@
           this.note_data = await axios.get('/api/notes/'+this.note_id)
           this.note = this.note_data.data
           console.log("note>", this.note)
+        },
+        async editNote() {
+          console.log("Note ID to edit:", this.note_id);
+          this.is_editing = true;
+          
+        },
+        async updateNote() {
+          console.log("Note ID to update:", this.note_id);
+
+          if (!this.note_id) {
+            alert("Error. Note ID is missing");
+            return;
+          }
+
+          try {
+            const response = await axios.post('/api/notes/update',  {
+              id: this.note_id, // or whatever key your API expects
+              text: this.note.text, // or whatever key your API expects
+              author: this.note.author
+            });
+            console.log('Note edit response:', response.data);
+            alert(`Note edited successfully.`);
+            // window.location.href = '/';  // 🔁 redirect to home page
+          } catch (error) {
+            console.error('Error editing note:', error);
+            alert('Failed to edit note. Please try again.');
+          }
+          this.is_editing = false;
         },
         async deleteNote() {
           // this.note_id = "{{noteId}}"
